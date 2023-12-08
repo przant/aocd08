@@ -18,7 +18,7 @@ const (
 type Network map[string]map[rune]string
 
 func main() {
-    pf, err := os.Open("example1.txt")
+    pf, err := os.Open("example2.txt")
     if err != nil {
         log.Fatalf("while opening file %q: %s", pf.Name(), err)
     }

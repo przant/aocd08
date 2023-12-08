@@ -24,7 +24,7 @@ var (
 type Network map[string]map[rune]string
 
 func main() {
-    pf, err := os.Open("example3.txt")
+    pf, err := os.Open("input.txt")
     if err != nil {
         log.Fatalf("while opening file %q: %s", pf.Name(), err)
     }
@@ -56,33 +56,62 @@ func main() {
         }
     }
 
-    steps := 0
-    // nextNode := startNode
-    nextNodes := make([]string, 0)
+    steps := make([]uint64, 0)
 
-    nextNodes = append(nextNodes, startNodes...)
-
-    for {
-        for _, step := range instr {
-            finish := true
-            fmt.Println(nextNodes)
-            steps++
-            for idx, nextNode := range nextNodes {
-                nextNodes[idx] = network[nextNode][step]
-            }
-
-            for _, nextNode := range nextNodes {
-                if !strings.HasSuffix(nextNode, "Z") {
-                    finish = false
-                    break
-                }
-            }
-
-            if finish {
-                fmt.Println(nextNodes)
-                fmt.Println(steps)
-                return
+    for _, fNode := range finalNodes {
+        for _, sNode := range startNodes {
+            if network[sNode][Left] == network[fNode][Left] || network[sNode][Right] == network[fNode][Left] {
+                steps = append(steps, walk(instr, sNode, fNode, network))
             }
         }
     }
+
+    gcd := steps[0]
+    for n := 1; n < len(steps); n++ {
+        gcd = GCD(gcd, steps[n])
+
+        if gcd == 1 {
+            break
+        }
+    }
+
+    result := uint64(1)
+
+    for _, n := range steps {
+        fmt.Print((n / gcd), ",")
+        result *= (n / gcd)
+    }
+
+    fmt.Println()
+    fmt.Println(result)
+
+}
+
+func walk(instr, sN, fN string, net Network) uint64 {
+    steps := uint64(0)
+    fmt.Println(sN)
+    for {
+        for _, step := range instr {
+            steps++
+            sN = net[sN][step]
+            if sN == fN {
+                return steps
+            }
+        }
+    }
+}
+
+func GCD(a, b uint64) uint64 {
+    for a > 0 && b > 0 {
+        if a > b {
+            a = a % b
+        } else {
+            b = b % a
+        }
+    }
+
+    if a == 0 {
+        return b
+    }
+    return a
 }

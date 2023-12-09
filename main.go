@@ -75,11 +75,9 @@ func main() {
         }
     }
 
-    result := uint64(1)
-
-    for _, n := range steps {
-        fmt.Print((n / gcd), ",")
-        result *= (n / gcd)
+    result := steps[0]
+    for i := 0; i < len(steps)-1; i++ {
+        result *= (steps[i+1] / gcd)
     }
 
     fmt.Println()

@@ -66,28 +66,13 @@ func main() {
         }
     }
 
-    gcd := steps[0]
-    for n := 1; n < len(steps); n++ {
-        gcd = GCD(gcd, steps[n])
-
-        if gcd == 1 {
-            break
-        }
-    }
-
-    result := steps[0]
-    for i := 0; i < len(steps)-1; i++ {
-        result *= (steps[i+1] / gcd)
-    }
-
     fmt.Println()
-    fmt.Println(result)
+    fmt.Println(LCM(steps))
 
 }
 
 func walk(instr, sN, fN string, net Network) uint64 {
     steps := uint64(0)
-    fmt.Println(sN)
     for {
         for _, step := range instr {
             steps++
@@ -112,4 +97,14 @@ func GCD(a, b uint64) uint64 {
         return b
     }
     return a
+}
+
+func LCM(steps []uint64) uint64 {
+    gcd := steps[0]
+    result := steps[0]
+    for i := 1; i < len(steps); i++ {
+        result *= (steps[i] / GCD(gcd, steps[i]))
+    }
+
+    return result
 }
